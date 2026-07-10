@@ -1,14 +1,20 @@
-[Unit]
-Description=Force Plates Dashboard
-After=network.target
+#!/bin/bash
 
-[Service]
-Type=oneshot
-WorkingDirectory=/home/pi/ForcePlates
-ExecStart=/home/pi/ForcePlates/start.sh
-ExecStop=/home/pi/ForcePlates/start.sh --stop
-RemainAfterExit=yes
-TimeoutStartSec=60
+URL="http://127.0.0.1:8080"
 
-[Install]
-WantedBy=multi-user.target
+# Wait until the dashboard is responding
+until curl --silent --fail "$URL/api/health" >/dev/null 2>&1; do
+    sleep 2
+done
+
+# Prevent an old Chromium warning window
+sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' \
+    "$HOME/.config/chromium/Default/Preferences" 2>/dev/null || true
+
+chromium \
+    --kiosk \
+    --noerrdialogs \
+    --disable-infobars \
+    --disable-session-crashed-bubble \
+    --no-first-run \
+    "$URL"
