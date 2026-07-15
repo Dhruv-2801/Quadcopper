@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>lamescore | Force Plate Dashboard</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="brand">
+        <button class="mark" id="menuToggle" type="button" aria-label="Open navigation menu" aria-expanded="false">LS</button>
+        <div>
+          <strong>lamescore</strong>
+          <span>Force plate analytics</span>
+        </div>
+      </div>
+
+      <nav>
+        <a class="active" href="#dashboard" data-page="dashboard"><span>◆</span> Dashboard</a>
+        <a href="#admin" data-page="admin"><span>▣</span> Admin</a>
+        <a href="#cows"><span>●</span> Cows</a>
+        <a href="#sessions"><span>◒</span> Sessions</a>
+        <a href="#comparisons"><span>▣</span> Comparisons</a>
+      </nav>
+
+      <div class="sidebar-foot">
+        <span> </span>
+        <strong id="dbStatus">Connecting</strong>
+      </div>
+    </aside>
+
+    <main class="shell">
+      <section id="dashboardPage" class="page" data-page="dashboard">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow"> ForcePlates</p>
+          <h1>Lameness monitoring dashboard</h1>
+        </div>
+        <div class="top-actions">
+          <label class="select-label" for="cowSelect">Cow</label>
+          <select id="cowSelect"></select>
+          <div class="live-pill"><span></span> Live</div>
+        </div>
+      </header>
+
+      <section class="dashboard-workspace">
+        <div class="dashboard-side-stack">
+          <section class="hero compact-card">
+            <div>
+              <p>Current force-plate session</p>
+              <h2 id="selectedCow">Cow-1</h2>
+              <span id="sessionMeta">Waiting for session data</span>
+            </div>
+          </section>
+
+          <article class="metric compact-card">
+            <div class="metric-top">
+              <span>Total load</span>
+              <small>now</small>
+            </div>
+            <strong><span id="totalAvg">0</span> lb</strong>
+            <canvas id="totalSpark" width="240" height="66"></canvas>
+          </article>
+
+          <article class="panel compact-card">
+            <div class="panel-head">
+              <div><h3>Individual legs</h3></div>
+            </div>
+            <div id="legs" class="legs"></div>
+          </article>
+
+          <article class="panel compact-card plate-card">
+            <div class="panel-head">
+              <div><h3>Plate channels</h3></div>
+            </div>
+            <div id="plateGrid" class="plate-grid"></div>
+          </article>
+        </div>
+
+        <article class="panel timeline-panel">
+          <div class="panel-head timeline-head">
+            <div>
+              <h3>Load timeline</h3>
+              <p>Drag or scroll on the graph to review the full milking visit.</p>
+            </div>
+            <div class="legend">
+              <span class="left"></span> Left
+              <span class="right"></span> Right
+              <span class="front"></span> Front
+              <span class="back"></span> Back
+            </div>
+          </div>
+          <canvas id="mainChart" class="main-chart"></canvas>
+        </article>
+      </section>
+      </section>
+
+      <section id="adminPage" class="page" hidden data-page="admin">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Administration</p>
+            <h1>Admin</h1>
+          </div>
+        </header>
+
+        <section class="admin-page-panel">
+          <form id="adminLogin" class="admin-login">
+            <strong>Admin login</strong>
+            <input id="adminUser" type="text" autocomplete="username" placeholder="Username" />
+            <input id="adminPass" type="password" autocomplete="current-password" placeholder="Password" />
+            <button type="submit">Login</button>
+            <span id="adminMessage"></span>
+          </form>
+          <div id="adminTools" class="admin-tools" hidden>
+            <span id="adminName">Admin logged in</span>
+            <button id="downloadDb" type="button">Download database</button>
+            <button id="adminLogout" type="button">Logout</button>
+          </div>
+        </section>
+
+        <article class="panel wide">
+          <div class="panel-head">
+            <div>
+              <h3>Connected devices</h3>
+              <p>Every plate that has reported data, most recent first.</p>
+            </div>
+            <button id="tareAll" type="button" class="tool-button">Tare all</button>
+          </div>
+          <div id="deviceList" class="device-list"></div>
+        </article>
+
+        <article class="panel wide">
+          <div class="panel-head">
+            <div>
+              <h3>Plate warnings</h3>
+              <p>Plate names must match <code>plate_&lt;set_id&gt;_&lt;plate_id&gt;</code> (e.g. <code>plate_01_flo</code>) and each code must be unique. Unrecognized names are dropped before they reach the database; if two devices report the same plate id, the second is dropped and flagged here as a conflict.</p>
+            </div>
+          </div>
+          <div id="rejectList" class="reject-list"></div>
+        </article>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
